@@ -1,0 +1,17 @@
+node_modules
+dist
+dist-ssr
+data
+*.local
+*.log
+npm-debug.log*
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea
+niva.zip
+tsconfig.*.tsbuildinfo

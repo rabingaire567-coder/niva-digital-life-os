@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b1020" />
+    <title>NIVA — Digital Life OS</title>
+    <meta
+      name="description"
+      content="NIVA turns plain-language mentions into a tracked, AI-prioritised queue of every deadline in your real life: documents, insurance, health, home and subscriptions."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="NIVA — Every deadline in your real life, in one place" />
+    <meta
+      property="og:description"
+      content="Track passports, licences, insurance, medication, warranties and renewals from one screen. AI plans the steps and the paperwork."
+    />
+    <script>
+      // Apply the saved theme before first paint to avoid a flash.
+      (function () {
+        try {
+          var s = JSON.parse(localStorage.getItem('niva:v1:settings') || 'null');
+          var t = s && s.theme === 'dark' ? 'dark' : s && s.theme === 'light' ? 'light' : null;
+          if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.dataset.theme = t;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <div style="max-width: 40rem; margin: 4rem auto; padding: 0 1.5rem; font: 16px/1.6 system-ui">
+        <h1>NIVA</h1>
+        <p>
+          NIVA needs JavaScript to track your life deadlines and generate renewal plans.
+          Please enable JavaScript and reload this page.
+        </p>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
