@@ -14,6 +14,11 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  # The site is served from https://<user>.github.io/<repo>/, so Vite assets and
+  # the React Router basename both need the /<repo>/ prefix.
+  NIVA_BASE: /niva-digital-life-os/
+
 jobs:
   build:
     runs-on: ubuntu-latest

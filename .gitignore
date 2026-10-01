@@ -14,4 +14,7 @@ Thumbs.db
 !.vscode/extensions.json
 .idea
 niva.zip
+# screenshots written by scripts/verify-build.mjs and scripts/check-live.mjs
+verify-*.png
+live-*.png
 tsconfig.*.tsbuildinfo
