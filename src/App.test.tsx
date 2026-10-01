@@ -1,9 +1,46 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createRoot } from 'react-dom/client';
 import { act } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '@/App';
-import { KEYS_TEST_RESET } from './test-helpers';
+
+/**
+ * Guards the production entry point.
+ *
+ * The page-level tests below wrap `App` in a `MemoryRouter` because that is what
+ * lets them assert individual routes. That convenience hides a whole class of
+ * bug: if the real entry point forgets its `BrowserRouter`, every one of those
+ * tests still passes while the deployed app renders a blank page. This test
+ * mounts the actual `main` module, which owns the router, against a real DOM.
+ */
+describe('production entry point', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.body.innerHTML = '<div id="root"></div>';
+  });
+
+  it('mounts main.tsx and paints the app without a router error', async () => {
+    const errors: string[] = [];
+    const onError = (e: ErrorEvent) => errors.push(e.message);
+    window.addEventListener('error', onError);
+
+    vi.resetModules();
+    await act(async () => {
+      await import('@/main');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 80));
+    });
+
+    window.removeEventListener('error', onError);
+
+    const html = document.getElementById('root')?.innerHTML ?? '';
+    expect(errors.filter((m) => /Router/.test(m))).toEqual([]);
+    expect(html.length).toBeGreaterThan(1000);
+    expect(html).toContain('Digital Life OS');
+    expect(html).toContain('Your queue');
+  });
+});
 
 async function render(path: string) {
   const host = document.createElement('div');
@@ -29,7 +66,6 @@ async function render(path: string) {
 describe('app renders every route without crashing', () => {
   beforeEach(() => {
     localStorage.clear();
-    void KEYS_TEST_RESET;
   });
 
   it('renders the Today dashboard with seeded data', async () => {
@@ -78,13 +114,13 @@ describe('app renders every route without crashing', () => {
     expect(vault).toContain('No matches');
   });
 
-  it('persists added items to localStorage', async () => {
+  it('persists items to localStorage', async () => {
     await render('/');
     const stored = localStorage.getItem('niva:v1:items') ?? '';
     expect(stored.length).toBeGreaterThan(0);
-    const parsed = JSON.parse(stored) as unknown[];
+    const parsed = JSON.parse(stored) as unknown;
     expect(Array.isArray(parsed)).toBe(true);
-    expect(parsed.length).toBeGreaterThan(5);
+    expect((parsed as unknown[]).length).toBeGreaterThan(5);
   });
 
   it('recovers from corrupted localStorage instead of crashing', async () => {

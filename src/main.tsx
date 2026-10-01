@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './styles/index.css';
 
@@ -8,6 +9,8 @@ if (!el) throw new Error('Root element #root is missing from index.html');
 
 createRoot(el).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>,
 );
